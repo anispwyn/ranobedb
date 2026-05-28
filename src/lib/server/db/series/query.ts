@@ -386,26 +386,6 @@ export async function getSeries(params: {
 									),
 							)
 							.groupBy('series.id');
-						if (form.data.tagsExclude.length > 0) {
-							if (form.data.tel === 'or') {
-								for (const tagExcl of form.data.tagsExclude) {
-									rqb = rqb.having(
-										(eb) =>
-											eb.fn
-												.count((eb2) =>
-													eb2
-														.case()
-														.when('series_tag.tag_id', '=', tagExcl)
-														.then('series_tag.tag_id')
-														.end(),
-												)
-												.distinct(),
-										'=',
-										0,
-									);
-								}
-							}
-						}
 						return rqb;
 					})
 					.$if(useStaffFilters, (qb) =>
@@ -471,6 +451,20 @@ export async function getSeries(params: {
 					),
 			),
 		);
+
+		if (useTagsFilters && form.data.tagsExclude.length > 0) {
+			query = query.where((eb) =>
+				eb.not(
+					eb.exists(
+						eb
+							.selectFrom('series_tag')
+							.select(eb.lit(1).as('exists'))
+							.whereRef('series_tag.series_id', '=', 'cte_series.id')
+							.where('series_tag.tag_id', 'in', form.data.tagsExclude),
+					),
+				),
+			);
+		}
 	}
 
 	if (form.data.minVolumes) {
