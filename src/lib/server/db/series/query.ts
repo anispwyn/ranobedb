@@ -168,25 +168,33 @@ export async function getSeries(params: {
 		query = query
 			.innerJoin('series_title', 'series_title.series_id', 'cte_series.id')
 			.select((eb) =>
-				eb
-					.case()
-					.when(
-						eb.fn('regexp_like', [
-							'cte_series.aliases',
-							eb.val(`^${escapeRegex(q)}$`),
-							eb.val('im'),
-						]),
+				eb.fn
+					.max(
+						eb
+							.case()
+							.when(
+								eb.or([
+									eb('series_title.title', 'ilike', q ?? ''),
+									eb('series_title.romaji', 'ilike', q ?? ''),
+								]),
+							)
+							.then(2)
+							.when(
+								eb.fn('regexp_like', [
+									'cte_series.aliases',
+									eb.val(`^${escapeRegex(q)}$`),
+									eb.val('im'),
+								]),
+							)
+							.then(1)
+							.else(
+								eb.fn('greatest', [
+									eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+									eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+								]),
+							)
+							.end(),
 					)
-					.then(1)
-					.else(
-						eb.fn.max(
-							eb.fn('greatest', [
-								eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
-								eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-							]),
-						),
-					)
-					.end()
 					.as('sim_score'),
 			)
 			.orderBy('sim_score', orderByDirection);

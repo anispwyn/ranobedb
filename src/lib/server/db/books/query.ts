@@ -114,10 +114,22 @@ export async function getBooks(params: {
 			.select((eb) =>
 				eb.fn
 					.max(
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
-						]),
+						eb
+							.case()
+							.when(
+								eb.or([
+									eb('book_title.title', 'ilike', q ?? ''),
+									eb('book_title.romaji', 'ilike', q ?? ''),
+								]),
+							)
+							.then(2)
+							.else(
+								eb.fn('greatest', [
+									eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+									eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+								]),
+							)
+							.end(),
 					)
 					.as('sim_score'),
 			)
