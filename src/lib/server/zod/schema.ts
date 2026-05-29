@@ -366,8 +366,28 @@ const zLinkNonNullish = (validHostnames: string[]) =>
 export const zLink = (validHostnames: string[]) => zLinkNonNullish(validHostnames).nullish();
 const zLinkAmazon = zLinkNonNullish([
 	'www.amazon.com',
+	'www.amazon.com.au',
+	'www.amazon.com.be',
+	'www.amazon.com.br',
 	'www.amazon.ca',
+	'www.amazon.cn',
+	'www.amazon.eg',
+	'www.amazon.fr',
+	'www.amazon.de',
+	'www.amazon.in',
+	'www.amazon.ie',
+	'www.amazon.it',
 	'www.amazon.co.jp',
+	'www.amazon.com.mx',
+	'www.amazon.nl',
+	'www.amazon.pl',
+	'www.amazon.sa',
+	'www.amazon.sg',
+	'www.amazon.co.za',
+	'www.amazon.es',
+	'www.amazon.se',
+	'www.amazon.com.tr',
+	'www.amazon.ae',
 	'www.amazon.co.uk',
 ])
 	.transform((url, ctx) => {
