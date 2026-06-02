@@ -851,10 +851,7 @@ export type HomeDisplaySettings = z.infer<typeof homeDisplaySettingsSchema>;
 
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({
-	items: z
-		.array(z.enum(dbItemArray))
-		.max(dbItemArray.length)
-		.default(dbItemArray.map((v) => v)),
+	items: z.array(z.enum(dbItemArray)).max(dbItemArray.length).default([]),
 	change_type: z.enum(historyFilterChangeType),
 	visibility: z.enum(historyFilterVisibilitys),
 	hide_automated: z.boolean().nullish(),
