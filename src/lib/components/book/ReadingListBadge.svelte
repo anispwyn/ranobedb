@@ -12,7 +12,7 @@
 		shadow?: boolean;
 	}
 
-	let { badge, score, displayOverride, textSize, shadow }: Props = $props();
+	let { badge, score, displayOverride, textSize = 'full', shadow }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
