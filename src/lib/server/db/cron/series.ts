@@ -114,9 +114,13 @@ export async function updateSeriesTranslated() {
 					.distinctOn('series.id')
 					.select(['series.id as series_id', 'series_book.sort_order'])
 					.select(
-						sql<Language[]>`array(select jsonb_object_keys(book.c_release_dates))::language[]`.as(
-							'langs',
-						),
+						sql<Language[]>`
+              array(
+                select kv.key 
+                from jsonb_each_text(book.c_release_dates) as kv 
+                where (kv.value)::int <= ${getTodayAsDateNumber()}
+              )::language[]
+            `.as('langs'),
 					)
 					.where('book.hidden', '=', false)
 					.where('series.hidden', '=', false)
