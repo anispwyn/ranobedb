@@ -47,16 +47,18 @@ export const load = async ({ locals }) => {
 	const recentlyReleasedFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
 	recentlyReleasedFiltersParams.set('sort', 'Release date desc');
 	recentlyReleasedFiltersParams.set('maxDate', yesterdayIso);
+	recentlyReleasedFiltersParams.set('minDate', '');
 	const upcomingReleasesFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
 	upcomingReleasesFiltersParams.set('sort', 'Release date asc');
 	upcomingReleasesFiltersParams.set('minDate', todayIso);
+	upcomingReleasesFiltersParams.set('maxDate', '');
 
 	const recentlyReleasedForm = await superValidate(
-		{ ...releasesForm.data, sort: 'Release date desc', maxDate: yesterdayIso },
+		{ ...releasesForm.data, sort: 'Release date desc', maxDate: yesterdayIso, minDate: '' },
 		zod4(releaseFiltersSchema),
 	);
 	const upcomingReleasesForm = await superValidate(
-		{ ...releasesForm.data, sort: 'Release date asc', minDate: todayIso },
+		{ ...releasesForm.data, sort: 'Release date asc', minDate: todayIso, maxDate: '' },
 		zod4(releaseFiltersSchema),
 	);
 
