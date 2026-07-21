@@ -71,6 +71,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 				return error(401, 'unauthorized');
 			}
 			event.locals.user = user;
+			event.locals.pat = token;
 		}
 	}
 
