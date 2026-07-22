@@ -65,7 +65,7 @@
 
 			<div class="flex flex-col gap-1">
 				{#if token}
-					<label class="w-fit flex items-center gap-1 cursor-pointer">
+					<label class="w-fit flex items-center gap-1">
 						<input
 							type="checkbox"
 							onchange={() => (currentType = currentType === 'password' ? 'text' : 'password')}
@@ -73,8 +73,8 @@
 						<span>Show Token</span>
 					</label>
 				{:else}
-					<p class="text-xs text-stone-400">
-						For security reasons, your token is hidden. Click "Refresh Token" to generate a new one.
+					<p class="text-xs sub-text-alt">
+						Your token has not been generated yet, Press "Refresh Token" to generate one
 					</p>
 				{/if}
 				<SubmitButton delayed={submitting} {submitting} text={'Refresh Token'} />
