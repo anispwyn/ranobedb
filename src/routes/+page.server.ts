@@ -1,5 +1,6 @@
 import { DBChanges } from '$lib/server/db/change/change';
 import { db } from '$lib/server/db/db';
+import { getDefaultSavedFilter } from '$lib/server/db/user/saved-filters';
 import { historyFiltersSchema, releaseFiltersSchema } from '$lib/server/zod/schema';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -30,15 +31,7 @@ export const load = async ({ locals }) => {
 		).home_display_settings;
 	}
 
-	const userListReleasesFilters = locals.user
-		? await db
-				.selectFrom('saved_filter')
-				.select('saved_filter.filters')
-				.where('saved_filter.user_id', '=', locals.user.id)
-				.where('saved_filter.item_name', '=', 'release')
-				.where('saved_filter.is_list', '=', false)
-				.executeTakeFirst()
-		: null;
+	const userListReleasesFilters = await getDefaultSavedFilter(locals.user?.id, 'release', false);
 
 	const releasesForm = await superValidate(
 		new URLSearchParams(userListReleasesFilters?.filters),
